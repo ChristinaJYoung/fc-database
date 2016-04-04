@@ -9,7 +9,8 @@ const passport = require('passport');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
-const userRoutes = require('./lib/user/routes');
+const userRoutes = require('./lib/user/routes/login');
+const breeds = require('./lib/user/routes/add-breed');
 
 const PORT = process.env.PORT || 3000;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'secret';
@@ -43,6 +44,7 @@ app.use(passport.session());
 app.locals = '';
 
 app.use(userRoutes);
+app.use(breeds);
 
 mongoose.connect('mongodb://localhost:27017/finalProject', (err) => {
   if (err) throw err;
