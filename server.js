@@ -7,10 +7,11 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const connectRedis = require('connect-redis');
 
 const userRoutes = require('./lib/user/routes/login');
 const breeds = require('./lib/user/routes/add-breed');
+const RedisStore = connectRedis(session);
 
 const PORT = process.env.PORT || 3000;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'secret';
@@ -20,8 +21,10 @@ app.set('view engine', 'jade');
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 app.use(session({
+  cookieName: 'session',
+  duration: 24 * 60 * 60 * 1000,
   secret: SESSION_SECRET,
-  store: new RedisStore()
+  store: new RedisStore({})
 }));
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8100');
